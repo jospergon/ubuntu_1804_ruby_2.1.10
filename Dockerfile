@@ -1,11 +1,21 @@
 FROM ubuntu:18.04
 
+# Set timezone 'Europe/Brussels'
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ 'Europe/Brussels'
+RUN echo $TZ > /etc/timezone && \
+apt-get update && apt-get install -y tzdata && \
+rm /etc/localtime && \
+ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
+dpkg-reconfigure -f noninteractive tzdata && \
+apt-get clean
+
 RUN apt-get -y update
 
 RUN apt-get install -y build-essential sudo
 RUN apt-get install -y git wget curl rsync bc apt-transport-https libxml2 libxml2-dev libcurl4-openssl-dev
 RUN apt-get install -y gawk libreadline6-dev libyaml-dev autoconf libgdbm-dev libncurses5-dev automake libtool bison libffi-dev
-RUN apt-get install -y libmagickwand-dev imagemagick
+RUN apt-get install -y libmagickwand-dev imagemagick inkscape
 RUN apt-get install -y nodejs mysql-client vim qt5-default libqt5webkit5-dev xvfb dbus-x11 gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-x xfonts-base xfonts-75dpi
 RUN apt-get install -y unzip netcat libgconf-2-4 poppler-utils
 RUN apt-get install -y libssl1.0-dev
@@ -14,7 +24,7 @@ RUN curl https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.d
 RUN dpkg -i /chrome.deb || apt-get install -yf
 RUN rm /chrome.deb
 
-RUN wget https://chromedriver.storage.googleapis.com/97.0.4692.71/chromedriver_linux64.zip
+RUN wget https://chromedriver.storage.googleapis.com/102.0.5005.61/chromedriver_linux64.zip
 RUN unzip chromedriver_linux64.zip
 RUN mv chromedriver /usr/local/bin/
 RUN chmod +x /usr/local/bin/chromedriver
